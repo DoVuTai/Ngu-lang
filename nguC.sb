@@ -1,0 +1,59 @@
+'SET UP:
+line=1
+TextWindow.Title="NGU lang"
+'---------------------------------------'
+'LOOP:
+start:
+index= Math.GetRandomNumber(1000)
+ngu=Program.Directory+"/main.ngu"
+func=File.ReadLine(ngu,line)
+if Text.StartsWith(func,"print") Then
+  goto printf
+ElseIf Text.StartsWith(func,"var") then
+  goto varf
+ElseIf Text.StartsWith(func,"end") then
+  Goto end 
+Else 
+  Goto break
+EndIf
+break:
+line=line+1
+Goto start
+'-------------------------------------------------------------'
+'FUNCTION:
+printf:
+if Text.IsSubText(func,":") Then
+  value=Text.GetSubTextToEnd(func,Text.GetIndexOf(func,":")+1)
+EndIf
+If Text.IsSubText(func,":+:") Or Text.IsSubText(func,":-:") Or Text.IsSubText(func,":*:") Or Text.IsSubText(func,":/:") then
+  print= LDText.Split(value,":")
+  If Array.ContainsValue(store,print[1]) then
+    op1=store_v[Text.GetCharacterCode(print[1])]
+  Else
+    op1=print[1]
+  EndIf
+  If Array.ContainsValue(store,print[3]) then
+    op2=store_v[Text.GetCharacterCode(print[3])]
+  Else
+    op2=print[3]
+    EndIf
+  If print[2]="-" Then
+    TextWindow.WriteLine(op1-op2)
+  ElseIf print[2]="*" then
+    TextWindow.WriteLine(op1*op2)
+  ElseIf print[2]="/" then
+    TextWindow.WriteLine(op1/op2)
+  ElseIf print[2]="+" then
+    TextWindow.WriteLine(op1+op2)
+  EndIf
+Else
+  TextWindow.Writeline(value) 
+EndIf
+Goto break
+varf:
+var=LDText.Split(func,":")
+store[index]=var[2]
+store_v[Text.GetCharacterCode(var[2])]=var[3]
+Goto break
+end:
+'-----------------------------------------------------------------'
